@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Like, Unlike } from "@components/Icon";
 import { handleToggle } from "@services/actions";
 import { formatDate } from "@services/format";
@@ -11,7 +12,7 @@ const Post = ({ post }) => {
   return (
     <article className="post">
       <div className="post-image">
-        <img src={post.image} alt={post.title} />
+        <Image src={post.image} fill alt={post.title} />
       </div>
       <div className="post-content">
         <header>

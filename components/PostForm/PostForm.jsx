@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { BeatLoader } from "react-spinners";
-import { handlePost } from "@services/forms";
+import { handlePost } from "@services/actions";
 
 export default () => {
   // TODO

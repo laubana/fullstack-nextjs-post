@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import logo from "@assets/logo.png";
 
@@ -5,7 +6,7 @@ export default () => {
   return (
     <header id="main-header">
       <Link href="/">
-        <img src={logo.src} alt="Mobile phone with posts feed on it" />
+        <Image src={logo} sizes="10vw" alt="logo" priority />
       </Link>
       <nav>
         <ul>
