@@ -5,6 +5,10 @@ import { Like, Unlike } from "@components/Icon";
 import { handleToggle } from "@services/actions";
 import { formatDate } from "@services/format";
 
+const imageLoader = (config) => {
+  return config.src;
+};
+
 // TODO
 // 179
 // const Post = ({ post, onToggle }) => {
@@ -12,7 +16,15 @@ const Post = ({ post }) => {
   return (
     <article className="post">
       <div className="post-image">
-        <Image src={post.image} fill alt={post.title} />
+        <Image
+          src={post.image}
+          loader={imageLoader}
+          fill
+          unoptimized
+          sizes="10vw"
+          alt={post.title}
+          quality={100}
+        />
       </div>
       <div className="post-content">
         <header>
