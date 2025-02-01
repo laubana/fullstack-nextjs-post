@@ -1,4 +1,5 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { v4 as uuidv4 } from "uuid";
 
 const s3 = new S3Client({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -6,9 +7,9 @@ const s3 = new S3Client({
   region: process.env.AWS_REGION,
 });
 
-export const uploadImage = async (image, slug) => {
+export const uploadImage = async (image) => {
   const extension = image.name.split(".").pop();
-  const filename = `${slug}.${extension}`;
+  const filename = `${uuidv4()}.${extension}`;
 
   const bufferedImage = await image.arrayBuffer();
 

@@ -2,26 +2,23 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+
+import { isEmpty } from "@helpers/string";
+
 const { storePost, updatePostLikeStatus } = require("@services/posts");
 
-const isEmpty = (text) => {
-  return !text || text.trim() === "";
-};
-
-// TODO
-// 169
-// export const handlePost = async (_, formData) => {
-export const handlePost = async (formData) => {
+export const handlePost = async (_, formData) => {
   const post = {
     title: formData.get("title"),
     content: formData.get("content"),
     image: formData.get("image"),
-    userId: 1,
+    authorName: formData.get("authorName"),
   };
 
   if (
     isEmpty(post.title) ||
     isEmpty(post.content) ||
+    isEmpty(post.authorName) ||
     !post.image ||
     post.image.size === 0
   ) {
@@ -34,6 +31,6 @@ export const handlePost = async (formData) => {
 };
 
 export const handleToggle = async (postId) => {
-  await updatePostLikeStatus(postId, 2);
+  await updatePostLikeStatus(postId);
   revalidatePath("/feed", "page");
 };

@@ -1,23 +1,22 @@
 "use client";
 
 import Image from "next/image";
-import { Like, Unlike } from "@components/Icon";
+import { useOptimistic } from "react";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+
+import { formatDate } from "@helpers/format";
 import { handleToggle } from "@services/actions";
-import { formatDate } from "@services/format";
 
 const imageLoader = (config) => {
   return config.src;
 };
 
-// TODO
-// 179
-// const Post = ({ post, onToggle }) => {
-const Post = ({ post }) => {
+const Post = ({ post, onToggle }) => {
   return (
     <article className="post">
       <div className="post-image">
         <Image
-          src={post.image}
+          src={post.imageUrl}
           loader={imageLoader}
           fill
           unoptimized
@@ -31,16 +30,20 @@ const Post = ({ post }) => {
           <div>
             <h2>{post.title}</h2>
             <p>
-              Shared by {post.userFirstName} on{" "}
+              Shared by {post.authorName} on{" "}
               <time dateTime={post.createdAt}>
                 {formatDate(post.createdAt)}
               </time>
             </p>
           </div>
           <div>
-            <form action={handleToggle.bind(null, post.id)}>
+            <form action={onToggle.bind(null, post._id)}>
               <button className="button transparent">
-                {post.isLiked ? <Unlike /> : <Like />}
+                {post.isLiked ? (
+                  <FaHeart size={24} color="#e32195" cursor="pointer" />
+                ) : (
+                  <FaRegHeart size={24} color="#e32195" cursor="pointer" />
+                )}
               </button>
             </form>
           </div>
@@ -52,36 +55,34 @@ const Post = ({ post }) => {
 };
 
 export default ({ posts }) => {
-  // TODO
-  // 179
-  // const [state, action] = useOptimistic(posts, (oldValues, postId) =>
-  //   oldValues.filter((oldValue) => {
-  //     if (oldValue.id === postId) {
-  //       if (oldValue.isLiked) {
-  //         return { ...oldValue, isLiked: false, likes: oldValue.likes - 1 };
-  //       } else {
-  //         return { ...oldValue, isLiked: true, likes: oldValue.likes + 1 };
-  //       }
-  //     } else {
-  //       return oldValue;
-  //     }
-  //   })
-  // );
+  const [optimizedPosts, action] = useOptimistic(posts, (oldValues, postId) =>
+    oldValues.filter((oldValue) => {
+      if (oldValue.id === postId) {
+        if (oldValue.isLiked) {
+          return { ...oldValue, isLiked: false };
+        } else {
+          return { ...oldValue, isLiked: true };
+        }
+      } else {
+        return oldValue;
+      }
+    })
+  );
 
-  // const handleToogle = async (postId) => {
-  //   action(postId);
-  //   handleToggle(postId);
-  // };
+  const handleToogle = async (postId) => {
+    action(postId);
+    await handleToggle(postId);
+  };
 
-  if (!posts || posts.length === 0) {
+  if (!optimizedPosts || optimizedPosts.length === 0) {
     return <p>There are no posts yet. Maybe start sharing some?</p>;
   }
 
   return (
     <ul className="posts">
-      {posts.map((post) => (
-        <li key={post.id}>
-          <Post post={post} />
+      {optimizedPosts.map((optimizedPost) => (
+        <li key={optimizedPost._id}>
+          <Post post={optimizedPost} onToggle={handleToogle} />
         </li>
       ))}
     </ul>
