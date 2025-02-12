@@ -1,20 +1,17 @@
-import { connect } from "@configs/db";
+import dbConfig from "@configs/dbConfig";
 import { uploadImage } from "@helpers/s3";
 import Post from "@models/Post";
 
 export async function getPosts(number) {
-  await connect();
+  await dbConfig.connect();
 
   const existingPosts = await Post.find().limit(number).lean();
 
-  return existingPosts.map((existingPost) => ({
-    ...existingPost,
-    _id: existingPost._id.toString(),
-  }));
+  return JSON.parse(JSON.stringify(existingPosts));
 }
 
 export async function storePost(post) {
-  await connect();
+  await dbConfig.connect();
 
   const imageUrl = await uploadImage(post.image);
 
@@ -26,13 +23,13 @@ export async function storePost(post) {
 }
 
 export async function updatePostLikeStatus(postId) {
-  await connect();
+  await dbConfig.connect();
 
   const updatedPost = await Post.findByIdAndUpdate(
     postId,
     [{ $set: { isLiked: { $not: "$isLiked" } } }],
     { new: true }
-  );
+  ).lean();
 
   return updatedPost;
 }

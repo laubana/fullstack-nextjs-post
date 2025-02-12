@@ -4,8 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { isEmpty } from "@helpers/string";
-
-const { storePost, updatePostLikeStatus } = require("@services/posts");
+import { storePost, updatePostLikeStatus } from "@services/posts";
 
 export const handlePost = async (_, formData) => {
   const post = {

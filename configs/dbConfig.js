@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 import "@models/Post";
 
-export const connect = async () => {
+const connect = async () => {
   try {
     await mongoose.connect(process.env.DB_URI);
   } catch (error) {
@@ -11,3 +11,5 @@ export const connect = async () => {
     console.error("Failed to connect to DB 🚨");
   }
 };
+
+export default { connect };
